@@ -1,13 +1,23 @@
-Rwhois 1.0.2
+Rwhois 1.0.3
 ============
 
 R package that queries WHOIS servers.
 
 # Installation #
 
-This package requires the "devtools" package available in [CRAN](https://cran.r-project.org/).
+## Production/CRAN install ##
 
-## Install devtools ##
+This package is available in [CRAN](https://bcable.net/x/Rwhois/CRAN).
+
+```
+install.packages("Rwhois")
+```
+
+## Development/GIT Install ##
+
+To install the development or GIT repository version, this requires the "devtools" package available in [CRAN](https://cran.r-project.org/package=devtools).
+
+### Install devtools ###
 
 Assuming you don't already have devtools installed, run the following:
 
@@ -15,9 +25,9 @@ Assuming you don't already have devtools installed, run the following:
 install.packages("devtools")
 ```
 
-## Install Rdicejobs ##
+### Install Rwhois ###
 
-With devtools installed, it's fairly simple to install Rwhois:
+With devtools installed, it's fairly simple to install the development branch:
 
 ```
 library(devtools)

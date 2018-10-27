@@ -18,7 +18,7 @@ whois_cleanup <- function(data){
 	lines <- trimws(strsplit(data, "\n")[[1]])
 
 	# strip commented and blank lines
-	lines <- lines[!(substr(lines,1,1) %in% c("%", ""))]
+	lines <- lines[!(substr(lines,1,1) %in% c("%", "#", ""))]
 
 	# strip everything after ">>>" row
 	lines <- lines[cumsum(!is.na(str_locate(lines, ">>>")[,"start"])) == 0]
