@@ -1,7 +1,7 @@
 whois_query_one <- function(hostname, server){
 	conn <- make.socket(server, 43)
 	write.socket(conn, hostname)
-	write.socket(conn, "\n")
+	write.socket(conn, "\r\n")
 
 	data <- ""
 	cur_read <- "x"
