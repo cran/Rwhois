@@ -1,4 +1,4 @@
-Rwhois 1.0.4
+Rwhois 1.0.5
 ============
 
 R package that queries WHOIS servers.

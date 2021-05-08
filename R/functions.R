@@ -42,8 +42,9 @@ whois_query_wrap <- function(hostname, server, raw.data, follow.refer){
 
 	} else {
 		df <- whois_cleanup(raw_data)
-		if(follow.refer){
-			while(df[1,"key"] == "refer"){
+		if(follow.refer && "refer" %in% df$key){
+			refer_key <- row(df)[df$key == "refer"][[1]]
+			while(df$key[[refer_key]] == "refer"){
 				raw_data <- whois_query_one(
 					hostname, df[1,"val"]
 				)
