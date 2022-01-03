@@ -1,6 +1,13 @@
 whois_query_one <- function(hostname, server){
 	conn <- make.socket(server, 43)
-	write.socket(conn, hostname)
+	if(server == "whois.arin.net"){
+		# ARIN is unique, "z + " is a special query that just means give me
+		# everything you have
+		write.socket(conn, paste0(c("z + ", hostname), collapse=""))
+	} else {
+		# This is the standard WHOIS query protocol
+		write.socket(conn, hostname)
+	}
 	write.socket(conn, "\r\n")
 
 	data <- ""
@@ -44,11 +51,23 @@ whois_query_wrap <- function(hostname, server, raw.data, follow.refer){
 		df <- whois_cleanup(raw_data)
 		if(follow.refer && nrow(df)>0 && "refer" %in% df$key){
 			refer_key <- row(df)[df$key == "refer"][[1]]
-			while(nrow(df)>0 && df$key[[refer_key]] == "refer"){
+			last_refer <- ""
+
+			while(
+				nrow(df) > 0 &&
+				df$key[[refer_key]] == "refer" &&
+				last_refer != df$key[[refer_key]]
+			){
+				last_refer <- df$key[[refer_key]]
+
 				raw_data <- whois_query_one(
 					hostname, df[1,"val"]
 				)
-				df <- whois_cleanup(raw_data)
+
+				new_df <- whois_cleanup(raw_data)
+				if(nrow(new_df) > 0){
+					df <- new_df
+				}
 			}
 		}
 		df
@@ -65,4 +84,21 @@ whois_query <- function(hostname,
 	} else {
 		whois_query_wrap(hostname, server, raw.data, follow.refer)
 	}
+}
+
+whois_keyextract <- function(query_ret, keys){
+	whois <- lapply(query_ret, FUN=function(df){
+		df$val[tolower(df$key) %in% tolower(keys)]
+	})
+	whois[sapply(whois, FUN=length) == 0] <- NA
+
+	if(sum(sapply(whois, FUN=length) > 1) != 0){
+		whois[sapply(whois, FUN=length) > 1] <-
+			sapply(whois[
+				sapply(whois, FUN=length) > 1],
+				FUN=function(df){ df[[1]] }
+			)
+	}
+
+	unlist(whois)
 }

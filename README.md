@@ -1,4 +1,4 @@
-Rwhois 1.0.6
+Rwhois 1.0.8
 ============
 
 R package that queries WHOIS servers.
@@ -51,4 +51,14 @@ whois_query("bcable.net", server="whois.verisign-grs.com")
 # Grab multiple vectorized results
 domains <- c("bcable.net", "google.com")
 whois_query(domains)
+
+# Extract Country Info About IP Addresses
+ret <- whois_query(ip_addresses)
+countries <- whois_keyextract(ret, "country")
+
+# Extract Organization Info About Hostnames
+ret <- whois_query(hostnames)
+organization_names <- whois_keyextract(ret,
+	c("org-name", "orgname", "organisation", "organization")
+)
 ```

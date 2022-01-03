@@ -1,3 +1,4 @@
 importFrom(stringr, str_locate)
 importFrom(utils, close.socket, make.socket, read.socket, write.socket)
 export(whois_query)
+export(whois_keyextract)
