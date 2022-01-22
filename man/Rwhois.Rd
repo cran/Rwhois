@@ -7,7 +7,9 @@
 \title{WHOIS server querying}
 \description{Queries WHOIS servers}
 \usage{
-whois_query(hostname, server="whois.iana.org", follow.refer=TRUE, raw.data=FALSE)
+whois_query(hostname, server="whois.iana.org",
+  follow.refer=TRUE, raw.data=FALSE, debug=FALSE
+)
 whois_keyextract(query_ret, keys)
 }
 \arguments{
@@ -17,6 +19,7 @@ whois_keyextract(query_ret, keys)
 \item{raw.data}{Whether to dump raw output as a character string without parsing.  Default FALSE.  If TRUE, this option supercedes follow.refer and forces it FALSE.}
 \item{query_ret}{data.frame that was returned from whois_query()}
 \item{keys}{Single string or vector of strings, case-insensitive, of what keys to look for in-order to return back values of from the whois return}
+\item{debug}{Boolean if you want debug prints (good for large quantities of manual data)}
 }
 \value{
 whois_query() returns a data.frame

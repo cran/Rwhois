@@ -1,4 +1,9 @@
-whois_query_one <- function(hostname, server){
+whois_query_one <- function(hostname, server, debug=FALSE){
+	if(debug == TRUE){
+		print(paste0("DEBUG: Hostname: ", hostname, collapse=""))
+		print(paste0("DEBUG: WHOIS Server: ", server, collapse=""))
+	}
+
 	conn <- make.socket(server, 43)
 	if(server == "whois.arin.net"){
 		# ARIN is unique, "z + " is a special query that just means give me
@@ -13,12 +18,21 @@ whois_query_one <- function(hostname, server){
 	data <- ""
 	cur_read <- "x"
 	while(cur_read != ""){
-		cur_read <- read.socket(conn)
-		data <- paste0(c(data, cur_read), collapse="")
+		tryCatch(
+			cur_read <- read.socket(conn),
+			error=function(e){
+				print(paste0("Error (WHOIS Server: ", server, "; Hostname Input: ", hostname))
+				print(e)
+				cur_read <- ""
+			}
+		)
+		if(cur_read != ""){
+			data <- paste0(c(data, cur_read), collapse="")
+		}
 	}
 
 	close.socket(conn)
-	data
+	enc2utf8(data)
 }
 
 whois_cleanup <- function(data){
@@ -41,8 +55,8 @@ whois_cleanup <- function(data){
 	)
 }
 
-whois_query_wrap <- function(hostname, server, raw.data, follow.refer){
-	raw_data <- whois_query_one(hostname, server)
+whois_query_wrap <- function(hostname, server, raw.data, follow.refer, debug=FALSE){
+	raw_data <- whois_query_one(hostname, server, debug=debug)
 
 	if(raw.data){
 		strsplit(raw_data, "\n")[[1]]
@@ -61,7 +75,7 @@ whois_query_wrap <- function(hostname, server, raw.data, follow.refer){
 				last_refer <- df$key[[refer_key]]
 
 				raw_data <- whois_query_one(
-					hostname, df[1,"val"]
+					hostname, df[1,"val"], debug=debug
 				)
 
 				new_df <- whois_cleanup(raw_data)
@@ -70,19 +84,24 @@ whois_query_wrap <- function(hostname, server, raw.data, follow.refer){
 				}
 			}
 		}
+
+		if(debug == TRUE){
+			print(paste0("DEBUG: Return: ", hostname, collapse=""))
+		}
 		df
 	}
 }
 
 whois_query <- function(hostname,
-	server="whois.iana.org", follow.refer=TRUE, raw.data=FALSE
+	server="whois.iana.org", follow.refer=TRUE, raw.data=FALSE,
+	debug=FALSE
 ){
 	if(length(hostname) > 1){
 		lapply(hostname, FUN=function(host){
-			whois_query_wrap(host, server, raw.data, follow.refer)
+			whois_query_wrap(host, server, raw.data, follow.refer, debug=debug)
 		})
 	} else {
-		whois_query_wrap(hostname, server, raw.data, follow.refer)
+		whois_query_wrap(hostname, server, raw.data, follow.refer, debug=debug)
 	}
 }
 
