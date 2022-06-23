@@ -10,7 +10,7 @@
 whois_query(hostname, server="whois.iana.org",
   follow.refer=TRUE, raw.data=FALSE, debug=FALSE
 )
-whois_keyextract(query_ret, keys)
+whois_keyextract(query_ret, keys, blacklist_values=NULL, unlist.recursive=TRUE)
 }
 \arguments{
 \item{hostname}{Server hostname (or hostnames as vector) to return results for.}
@@ -20,6 +20,8 @@ whois_keyextract(query_ret, keys)
 \item{query_ret}{data.frame that was returned from whois_query()}
 \item{keys}{Single string or vector of strings, case-insensitive, of what keys to look for in-order to return back values of from the whois return}
 \item{debug}{Boolean if you want debug prints (good for large quantities of manual data)}
+\item{blacklist_values}{Character or vector of values (or starting values) to skip when searching}
+\item{unlist.recursive}{Boolean if you want the unlist at the end to pass recursively}
 }
 \value{
 whois_query() returns a data.frame
@@ -37,7 +39,7 @@ whois_query("1.1.1.1")
 whois_query("bcable.net", server="whois.verisign-grs.com")
 
 # Grab multiple vectorized results
-domains <- c("bcable.net", "google.com")
+domains <- c("bcable.net", "duckduckgo.com")
 whois_query(domains)
 
 # Extract Country Info About IP Addresses
