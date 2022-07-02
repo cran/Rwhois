@@ -144,7 +144,7 @@ whois_query_wrap <- function(hostname, server, raw.data, follow.refer, debug=FAL
 				last_refer <- df$key[[refer_key]]
 
 				raw_data <- whois_query_one(
-					hostname, df[1,"val"], debug=debug
+					hostname, df[1, "val"], debug=debug
 				)
 
 				new_df <- whois_cleanup(raw_data)
@@ -197,12 +197,28 @@ whois_query <- function(hostname,
 	query_ret, keys, blacklist_values=NULL, unlist.recursive=TRUE
 ){
 	if(is.data.frame(query_ret)){
-		data_ret <- query_ret$val[tolower(query_ret$key) %in% tolower(keys)]
-		.vect_blacklist(data_ret, blacklist_values)
+		if(
+			!is.null(query_ret[["key"]]) &&
+			!is.null(query_ret[["val"]])
+		){
+			data_ret <- query_ret$val[tolower(query_ret$key) %in% tolower(keys)]
+			.vect_blacklist(data_ret, blacklist_values)
+
+		} else {
+			NA
+		}
 
 	} else {
 		data_ret <- lapply(query_ret, FUN=function(df){
-			df$val[tolower(df$key) %in% tolower(keys)]
+			if(
+				!is.null(df[["key"]]) &&
+				!is.null(df[["val"]])
+			){
+				df$val[tolower(df$key) %in% tolower(keys)]
+
+			} else {
+				NA
+			}
 		})
 		data_ret[sapply(data_ret, FUN=length) == 0] <- NA
 
@@ -219,7 +235,6 @@ whois_query <- function(hostname,
 		unlist(data_ret, recursive=unlist.recursive)
 	}
 }
-
 
 whois_keyextract <- .keyval_extract
 whois_keyval_extract <- .keyval_extract
