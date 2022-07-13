@@ -197,10 +197,7 @@ whois_query <- function(hostname,
 	query_ret, keys, blacklist_values=NULL, unlist.recursive=TRUE
 ){
 	if(is.data.frame(query_ret)){
-		if(
-			!is.null(query_ret[["key"]]) &&
-			!is.null(query_ret[["val"]])
-		){
+		if(sum(c("key","val") %in% names(query_ret)) == 2){
 			data_ret <- query_ret$val[tolower(query_ret$key) %in% tolower(keys)]
 			.vect_blacklist(data_ret, blacklist_values)
 
@@ -210,10 +207,7 @@ whois_query <- function(hostname,
 
 	} else {
 		data_ret <- lapply(query_ret, FUN=function(df){
-			if(
-				!is.null(df[["key"]]) &&
-				!is.null(df[["val"]])
-			){
+			if(sum(c("key","val") %in% names(df)) == 2){
 				df$val[tolower(df$key) %in% tolower(keys)]
 
 			} else {
