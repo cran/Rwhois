@@ -82,7 +82,8 @@ whois_query_one <- function(hostname, server, debug=FALSE){
 
 		data <- ""
 		cur_read <- "x"
-		while(cur_read != ""){
+		error_count <- 0
+		while(cur_read != "" && error_count < 5){
 			tryCatch(
 				cur_read <- read.socket(conn),
 				error=function(e){
@@ -92,6 +93,7 @@ whois_query_one <- function(hostname, server, debug=FALSE){
 					))
 					print(e)
 					cur_read <- ""
+					error_count <- error_count + 1
 				}
 			)
 			if(cur_read != ""){

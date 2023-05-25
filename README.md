@@ -1,4 +1,4 @@
-Rwhois 1.0.12
+Rwhois 1.0.14
 =============
 
 R package that queries WHOIS servers.
@@ -39,9 +39,6 @@ install_git("https://gitlab.com/BCable/Rwhois.git")
 ```r
 library(Rwhois)
 
-# Grab WHOIS data for a hostname
-whois_query("bcable.net")
-
 # Grab WHOIS data for an IP
 whois_query("1.1.1.1")
 
@@ -49,11 +46,11 @@ whois_query("1.1.1.1")
 whois_query("bcable.net", server="whois.verisign-grs.com")
 
 # Grab multiple vectorized results
-domains <- c("bcable.net", "duckduckgo.com")
+domains <- c("bcable.net", "4.2.2.4")
 whois_query(domains)
 
 # Extract Country Info About IP Addresses
-ip_addresses <- c("1.1.1.1", "4.2.2.4", "8.8.8.8")
+ip_addresses <- c("1.1.1.1", "8.8.8.8")
 ret <- whois_query(ip_addresses)
 countries <- whois_keyextract(ret, "country")
 
