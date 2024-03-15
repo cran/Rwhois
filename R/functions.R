@@ -179,7 +179,7 @@ whois_query <- function(hostname,
 # shared code with Rwhois and Rrdap
 .vect_blacklist <- function(vect, blacklist_values=NULL){
 	if(is.null(blacklist_values)){
-		vect[[1]]
+		retNames <- vect
 
 	} else {
 		mat <- sapply(blacklist_values, FUN=function(bval){
@@ -189,8 +189,15 @@ whois_query <- function(hostname,
 				}
 			)
 		})
+
 		sumsMat <- rowSums(mat)
-		names(sumsMat)[sumsMat==0][[1]]
+		retNames <- names(sumsMat)[sumsMat==0]
+	}
+
+	if(length(retNames) > 0){
+		retNames[[1]]
+	} else {
+		NA
 	}
 }
 
